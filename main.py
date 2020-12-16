@@ -1,8 +1,9 @@
 import pygame as pg
 from math import sqrt
-
 pg.init()
-screen = pg.display.set_mode((500, 500))
+
+SCREENSIZE = 500
+screen = pg.display.set_mode((SCREENSIZE, SCREENSIZE))
 pg.display.set_caption('Red Circles Redemption')
 
 backcolor = (255, 255, 255)
@@ -25,6 +26,16 @@ class Circle:
 
     def getDistance(self, target):
         return sqrt((self.location[0] - target.location[0])**2 + (self.location[1] - target.location[1])**2)
+
+    def checkBorders(self, _screensize):
+        if self.location[0] - self.radius < 0:
+            self.location[0] = self.radius
+        if self.location[0] + self.radius > _screensize:
+            self.location[0] = _screensize - self.radius
+        if self.location[1] - self.radius < 0:
+            self.location[1] = self.radius
+        if self.location[1] + self.radius > _screensize:
+            self.location[1] = _screensize - self.radius
 
 class Protagonist(Circle):
     def __init__(self, c, r, loc, s):
@@ -102,6 +113,9 @@ while running:
         en.charge(p)
 
     screen.fill(backcolor)
+    p.checkBorders(SCREENSIZE)
+    for el in enemies:
+        el.checkBorders(SCREENSIZE)
     p.draw()
     sh.draw()
     for en in enemies:
